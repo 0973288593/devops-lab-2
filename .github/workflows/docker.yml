@@ -1,0 +1,22 @@
+name:build cafe shop
+
+on: push
+
+jobs:
+  check:
+    runs-on: Ubuntu latest
+    steps:
+      - name: Get the code
+        uses: action/checkout@v4
+
+      - name: Build the box
+        run: docker build -t cafe-shop .
+
+      - name: Run the box
+        run: docker run -d -p 9090:80 --name cafe cafe-shop
+
+      - name: Test the website
+        run: |
+          sleep 3
+          curl -f http://localhost:8080
+          curl -s http://localhost:8080 | grep "DevOps"
