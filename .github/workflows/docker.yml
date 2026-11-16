@@ -1,5 +1,6 @@
-name:build cafe shop
-on:push
+name: build cafe shop
+
+on: push
 
 jobs:
   check:
