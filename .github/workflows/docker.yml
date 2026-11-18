@@ -1,6 +1,13 @@
 name: build cafe shop
 
-on: push
+on: 
+ push:
+   branches:
+    - main
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
   check:
@@ -20,3 +27,13 @@ jobs:
           sleep 3
           curl -f http://localhost:9090
           curl -s http://localhost:9090 | grep "DevOps"
+
+      - name: Log in to   warehouse
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      
+      - name: Upload the box
+        run : | IMAGE=ghr.io/${GITHUB_REPOSITORY,,}
+	docker tag cafe-shop $IMAGE:latest
+	docker tag cafe-shop $IMAGE:${{ github.sha }}
+	docker push $IMAGE.latest
+	docker push $IMAGE:${{ github.sha }}
